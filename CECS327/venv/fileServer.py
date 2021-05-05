@@ -40,15 +40,15 @@ class Handler(FileSystemEventHandler):
                 dest_file = event.dest_path.split('\\')[1].split('~')[0]
                 print(file)
                 print(dest_file)
-                client(file, True)
-                client(dest_file, False)
+                send(file, True)
+                send(dest_file, False)
             elif event.event_type == 'modified' or event.event_type == 'created':
-                client(file, False)
+                send(file, False)
             elif event.event_type == 'deleted':
-                client(file, True)
+                send(file, True)
 
 
-def client(filename, deleting):
+def send(filename, deleting):
     global sending
     sending = True
     host = '25.5.20.122'
@@ -80,7 +80,7 @@ def client(filename, deleting):
     sending = False
 
 
-def RetrFile(name, sock):
+def Receive(name, sock):
     global receiving
     receiving = True
     filename = sock.recv(1024).decode()
@@ -125,7 +125,7 @@ def server():
         while True:
             c, addr = s.accept()
             print ("client connected ip:<" + str(addr) + ">")
-            t = threading.Thread(target=RetrFile, args=("RetrFile", c))
+            t = threading.Thread(target=Receive, args=("Receive", c))
             t.start()
         s.close()
 
